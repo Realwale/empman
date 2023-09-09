@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.waletech.departmentservice.dto.DepartmentDTO;
 import org.waletech.departmentservice.entity.Department;
+import org.waletech.departmentservice.exception.DepartmentException;
 import org.waletech.departmentservice.repository.DepartmentRepository;
 import org.waletech.departmentservice.service.DepartmentService;
 
@@ -28,6 +29,25 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .departmentCode(department.getDepartmentCode())
                 .departmentDescription(department.getDepartmentDescription())
                 .build();
+    }
+
+    @Override
+    public DepartmentDTO getDepartmentByCode(String departmentCode) {
+        Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(()-> new DepartmentException("Department not found with "+ departmentCode));
+
+        return DepartmentDTO.builder()
+                .id(department.getId())
+                .departmentName(department.getDepartmentName())
+                .departmentDescription(department.getDepartmentDescription())
+                .departmentCode(department.getDepartmentCode())
+                .build();
+    }
+
+    @Override
+    public String deleteDepartmentByCode(String departmentCode) {
+        departmentRepository.deleteByDepartmentCode(departmentCode);
+
+        return "Deleted";
     }
 
 }
