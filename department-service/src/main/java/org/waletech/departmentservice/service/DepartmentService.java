@@ -1,4 +1,8 @@
 package org.waletech.departmentservice.service;
 
-public class DepartmentService {
+import org.waletech.departmentservice.dto.DepartmentDTO;
+
+public interface DepartmentService {
+
+    DepartmentDTO saveDepartment(DepartmentDTO departmentDTO);
 }
