@@ -43,4 +43,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .email(employee.getEmail())
                 .build();
     }
+
+    @Override
+    public String deleteEmployeeById(Long employeeId) {
+        employeeRepository.deleteById(employeeId);
+        return "Deleted";
+    }
 }

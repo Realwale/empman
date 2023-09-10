@@ -7,4 +7,6 @@ public interface EmployeeService {
     EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
 
     EmployeeDTO getEmployeeById(Long employeeId);
+
+    String deleteEmployeeById(Long employeeId);
 }
