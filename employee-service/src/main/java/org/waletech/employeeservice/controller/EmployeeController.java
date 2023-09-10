@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.waletech.employeeservice.dto.APIResponse;
 import org.waletech.employeeservice.dto.EmployeeDTO;
 import org.waletech.employeeservice.service.EmployeeService;
 
@@ -22,7 +23,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{employeeId}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeId){
+    public ResponseEntity<APIResponse> getEmployeeById(@PathVariable Long employeeId){
         return new ResponseEntity<>(employeeService.getEmployeeById(employeeId), HttpStatus.OK);
     }
 
