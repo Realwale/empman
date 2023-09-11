@@ -1,10 +1,9 @@
 package org.waletech.employeeservice.service.impl;
 
-import lombok.AllArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.waletech.employeeservice.dto.APIResponse;
 import org.waletech.employeeservice.dto.DepartmentDTO;
 import org.waletech.employeeservice.dto.EmployeeDTO;
@@ -14,12 +13,15 @@ import org.waletech.employeeservice.repository.EmployeeRepository;
 import org.waletech.employeeservice.service.EmployeeService;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
 
-    private RestTemplate restTemplate;
+   // private final RestTemplate restTemplate;
+
+
+    private final WebClient webClient;    //Using webclient for communication
 
     @Override
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
@@ -48,13 +50,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         /*
         Using RestTemplate to establish communication between the two services
-         */
 
       ResponseEntity<DepartmentDTO> response = restTemplate.getForEntity("http://localhost:8080/departments/"+employee.getDepartmentCode(),
                 DepartmentDTO.class);
 
       DepartmentDTO departmentDTO = response.getBody();
+         */
 
+
+        /*
+        Using Webclient for communication
+         */
+        DepartmentDTO departmentDTO = webClient.get()
+                .uri("http://localhost:8080/departments/"+employee.getDepartmentCode())
+                .retrieve()
+                .bodyToMono(DepartmentDTO.class)
+                .block();
 
 
         EmployeeDTO employeeDTO = EmployeeDTO.builder()
