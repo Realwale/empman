@@ -3,7 +3,6 @@ package org.waletech.employeeservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.waletech.employeeservice.dto.APIResponse;
 import org.waletech.employeeservice.dto.DepartmentDTO;
 import org.waletech.employeeservice.dto.EmployeeDTO;
@@ -11,6 +10,7 @@ import org.waletech.employeeservice.entity.Employee;
 import org.waletech.employeeservice.exception.EmployeeException;
 import org.waletech.employeeservice.repository.EmployeeRepository;
 import org.waletech.employeeservice.service.EmployeeService;
+import org.waletech.employeeservice.service.OpenFeignClient;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +18,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-   // private final RestTemplate restTemplate;
+   //1. private final RestTemplate restTemplate;
 
 
-    private final WebClient webClient;    //Using webclient for communication
+   //2. private final WebClient webClient;    //Using webclient for communication
+
+  //3. Using OpenFeignClient for communication
+
+   private final OpenFeignClient openFeignClient;
+
+
 
     @Override
     public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
@@ -49,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(()-> new EmployeeException("Employee not found with "+ employeeId));
 
         /*
-        Using RestTemplate to establish communication between the two services
+        1. Using RestTemplate to establish communication between the two services
 
       ResponseEntity<DepartmentDTO> response = restTemplate.getForEntity("http://localhost:8080/departments/"+employee.getDepartmentCode(),
                 DepartmentDTO.class);
@@ -59,14 +65,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         /*
-        Using Webclient for communication
-         */
+        2. Using Webclient for communication
+
         DepartmentDTO departmentDTO = webClient.get()
                 .uri("http://localhost:8080/departments/"+employee.getDepartmentCode())
                 .retrieve()
                 .bodyToMono(DepartmentDTO.class)
                 .block();
+         */
 
+       DepartmentDTO departmentDTO = openFeignClient.getDepartmentByCode(employee.getDepartmentCode());
 
         EmployeeDTO employeeDTO = EmployeeDTO.builder()
                 .id(employee.getId())
